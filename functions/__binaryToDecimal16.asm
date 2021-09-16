@@ -1,19 +1,33 @@
-; Compile: nasm x.asm -f bin -o test.bin
-; function to print a string saved in bx
+; Compile: nasm __binaryToDecimal16.asm -f bin -o __binaryToDecimal16.bin
+; function to print binary value as decimal in ax(uses stack)
 ; Author: Totan
-; see od -t x1 -A n xx.bin
-[bits 16]
-mov ax, 0x7c0
-mov ds, ax
-mov bx,msg
-mov cx,10
-loop:
-call __printString16
-loop loop
+; see od -t x1 -A n __binaryToDecimal16.bin
 
-jmp $
-%include "__printString16.asm"
-msg: "deneme" ,10 , 13 ,0
+	
+__binaryToDecimal16:
 
-times 510 - ($-$$) db 0
-dw 0xaa55 
+	push ax
+	push bx		;pushes the registers of our use
+	push dx
+	push 0x0e00	;to distinguis end of string and also an null condition for teletype
+	push 0x0e0d	;new line
+	push 0x0e0a	;enter
+	xor dx, dx
+	mov bx, 10
+__binaryToDecimal16_loop1:
+	div bx		;division
+	add dx, 0x0e30	;making the number writable for int 10h later
+	push dx		;store
+	xor dx, dx
+	cmp ax, 0
+	jne __binaryToDecimal16_loop1
+__binaryToDecimal16_loop2:
+	pop ax
+	int 0x10		;print stuff
+	cmp ax, 0x0e00		;search for the null end
+	jne __binaryToDecimal16_loop2
+	pop dx
+	pop bx		;restores previous values
+	pop ax
+	ret
+
