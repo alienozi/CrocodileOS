@@ -18,7 +18,7 @@ dene:
 	
 msg: 	db "AMOGUS", 0x0a , 0x0d ,0
 
-	%include "__printString16.asm"
+	%include "./functions/__printString16.asm"
 
 	times 510-($-$$) db 0		;pads the sector until the last two bytes in 512B
 	dw 0xaa55			;last two bytes (word/wyde) with magic number! 
