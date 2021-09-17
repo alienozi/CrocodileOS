@@ -46,7 +46,7 @@
 ;#############################################################################################
 	
 	mov cl, 0x01			; error check flag counter
-	mov ah, 0x13			; precursor to interrupt 13,01
+	mov ah, 0x01			; precursor to interrupt 13,01
 	int 13				; INT 13,1 - Get Status
 	cmp al, 0x00
 	je __NoError	
@@ -127,10 +127,6 @@ __Menu:
 
 	%include "__printString16.asm"
 
-;#############################################################################################
-	times 510-($-$$) db 0		;pads the sector until the last two bytes in 512B
-	dw 0xaa55			;last two bytes (word/wyde) with magic number! 
-;#############################################################################################
 
 ;DATA
 ErrMsg: 	db "Error Reading Devices, Error Code:",0
@@ -139,3 +135,7 @@ Border:		db "*************************************", 0x0a, 0x0d, 0
 MenuEntry1:	db "* 1) Load Cylinder from the CD	*", 0x0a, 0x0d, 0
 MenuEntry2:	db "* 2) Load Cylinder from HDD		*", 0x0a, 0x0d, 0
 MenuEntry3:	db "* 2) Load Cylinder from Floppy	*", 0x0a, 0x0d, 0
+;#############################################################################################
+	times 510-($-$$) db 0		;pads the sector until the last two bytes in 512B
+	dw 0xaa55			;last two bytes (word/wyde) with magic number! 
+;#############################################################################################
