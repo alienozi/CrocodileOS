@@ -1,7 +1,7 @@
-; Compile: nasm __scanString16.asm -f bin -o __scanString16.bin
+; Compile: nasm __scanString16.asm -f bin -o test.bin
 ; function to scan a string and store in address in bx in increasing address order
 ; Author: Oguz/Totan
-; see od -t x1 -A n __scanString16.bin
+; see od -t x1 -A n test.bin
 __scanString16:
 	push ax
 	push bx			;push registers

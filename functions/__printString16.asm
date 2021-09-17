@@ -1,7 +1,7 @@
-; Compile: nasm __printString16.asm -f bin -o __printString16.bin
+; Compile: nasm __printString16.asm -f bin -o test.bin
 ; function to print a string saved in bx
 ; Author: Oguz/Totan
-; see od -t x1 -A n __printString16.bin
+; see od -t x1 -A n test.bin
 
 __printString16:		;uses bx register for input address (only 16 bit)
 	push ax			;pushing necessary registers
