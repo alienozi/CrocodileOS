@@ -1,6 +1,6 @@
 ; Compile: nasm __binaryToDecimal16.asm -f bin -o __binaryToDecimal16.bin
 ; function to print binary value as decimal in ax(uses stack)
-; Author: Totan
+; Author: Oguz/Totan
 ; see od -t x1 -A n __binaryToDecimal16.bin
 
 	
