@@ -53,6 +53,8 @@ __printString16_loop3:
 	inc si
 	jmp __printString16_loop1	;continues as if nothing happend from where it is left
 __printString16_end:
+	dec bx
+	dec bx
 	mov [__printString16_cursor],bx
 	pop bx
 	mov es, bx

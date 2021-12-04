@@ -3,16 +3,17 @@
 ; Author: Totan
 ; see od -t x1 -A n xx.bin
 [bits 16]
-mov bp,0x7000
-mov sp,0x7000
 mov ax,0x7c0
 mov ds,ax
-xor ax,ax
-mov si,txt
+mov si,data
+mov cx,5
+loop:
 call __printString16
+loop loop
 cli
 hlt
-txt: db 0,0,"anan",13,"anan",0
+data:
+db "anaan",0
 %include "__printString16.asm"
-times 510 -( $ - $$ ) db 0 
+times 510-($-$$) db 0
 dw 0xaa55
