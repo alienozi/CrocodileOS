@@ -3,31 +3,30 @@
 ; Author: Oguz/Totan
 ; see od -t x1 -A n test.bin
 
-	
+__binaryToDecimal16_mem: 
+	times 6 db 0
 __binaryToDecimal16:
 
 	push ax
 	push bx		;pushes the registers of our use
+	push cx
 	push dx
-	push 0x0e00	;to distinguis end of string and also an null condition for teletype
-	push 0x0e0d	;new line
-	push 0x0e0a	;enter
-	xor dx, dx
-	mov bx, 10
+	mov bx,__binaryToDecimal16_mem+4
+	mov cx,10
 __binaryToDecimal16_loop1:
-	div bx		;division
-	add dx, 0x0e30	;making the number writable for int 10h later
-	push dx		;store
-	xor dx, dx
+	xor dx,dx
+	div cx		;division
+	add dl, "0"
+	mov [bx],dl
+	dec bx
 	cmp ax, 0
 	jne __binaryToDecimal16_loop1
-__binaryToDecimal16_loop2:
-	pop ax
-	int 0x10		;print stuff
-	cmp ax, 0x0e00		;search for the null end
-	jne __binaryToDecimal16_loop2
+	inc bx
+	mov si,bx
+	call __printString16
 	pop dx
+	pop cx
 	pop bx		;restores previous values
 	pop ax
 	ret
-
+	

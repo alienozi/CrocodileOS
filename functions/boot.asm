@@ -6,6 +6,7 @@ bits 16
 	call jmp
 	jmp:
 	pop ax
+	cli
 	xor dx,dx
 	mov bx,16
 	div bx
@@ -17,6 +18,14 @@ bits 16
 	cmp al,0xff
 	jne boot_stage_1
 	mov dx,0x177
+	in al,dx
+	cmp al,0xff
+	jne boot_stage_1
+	mov dx,0x1ef
+	in al,dx
+	cmp al,0xff
+	jne boot_stage_1
+	mov dx,0x16f
 	in al,dx
 	cmp al,0xff
 	jne boot_stage_1
@@ -77,7 +86,6 @@ MBR_P1:
 second_stage:
 	mov si,data4
 	call __printString16
-	cli
 	hlt
 data4:
 	db "anan zaa xd xd",0
