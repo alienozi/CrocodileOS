@@ -8,8 +8,7 @@ bits 16
 	pop ax
 	cli
 	xor dx,dx
-	mov bx,16
-	div bx
+	shr ax,4
 	mov ds,ax
 	mov si,data1
 	call __printString16
@@ -61,13 +60,13 @@ wait1:
 	
 	sub dx,7
 	mov di,ds
-	shl di,1
+	shl di,4
 	add di,second_stage
 	mov cx,256*3
 	rep insw
 	mov si,data3
 	call __printString16
-	jmp second_stage
+	jmp long second_stage
 data1: 
 	db 0,0,"operating system found",13,0
 data2:
@@ -77,6 +76,7 @@ data3:
 error1: 
 	db "driver not found",0	
 	%include "__printString16.asm"
+	%include "__binaryToDecimal16.asm"
 	times 446-($-$$) db 0
 MBR_P1:
 	db 0x80 ,1,1,0,0x06,16,16,16
@@ -84,9 +84,10 @@ MBR_P1:
 	times 48 db 0
 	dw 0xaa55
 second_stage:
-	mov si,data4
-	call __printString16
-	hlt
+mov si, data4
+call __printString16
+cli
+hlt
 data4:
-	db "anan zaa xd xd",0
+	db "anan zaa xd xd",0,5
 	times 1024-($-$$) db 0

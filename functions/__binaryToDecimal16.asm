@@ -2,7 +2,9 @@
 ; function to print binary value as decimal in ax(uses stack)
 ; Author: Oguz/Totan
 ; see od -t x1 -A n test.bin
-
+%ifndef __binaryToDecimal16_def
+%define __binaryToDecimal16_def 0
+%include "__printString16.asm"
 __binaryToDecimal16_mem: 
 	times 6 db 0
 __binaryToDecimal16:
@@ -29,4 +31,4 @@ __binaryToDecimal16_loop1:
 	pop bx		;restores previous values
 	pop ax
 	ret
-	
+%endif	

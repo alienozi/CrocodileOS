@@ -6,6 +6,8 @@
 ;write 13 for enter
 ;write 0,0 for clear screen and continue to write
 ;write 0,0,0 for clear screen and stop writing
+%ifndef __printString16_def
+%define __printString16_def 0
 __printString16:
 	push ax			;uses si register for input address (only 16 bit)
 	push bx			;pushing necessary registers
@@ -63,3 +65,4 @@ __printString16_end:
 	pop ax
 	ret
 	__printString16_cursor: dw 0
+%endif
