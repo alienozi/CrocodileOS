@@ -12,6 +12,12 @@ bits 16
 	mov ds,ax
 	mov si,data1
 	call __printString16
+			push ax
+			xor ax,ax
+		mov al,[0x27]
+		call __binaryToDecimal16
+		
+		pop ax
 	mov dx,0x1f7
 	in al,dx
 	cmp al,0xff

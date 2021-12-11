@@ -5,14 +5,15 @@
 %ifndef __binaryToDecimal16_def
 %define __binaryToDecimal16_def 0
 %include "__printString16.asm"
-__binaryToDecimal16_mem: 
-	times 6 db 0
+
 __binaryToDecimal16:
 
 	push ax
 	push bx		;pushes the registers of our use
 	push cx
 	push dx
+	__binaryToDecimal16_mem: 
+	times 6 db 0
 	mov bx,__binaryToDecimal16_mem+4
 	mov cx,10
 __binaryToDecimal16_loop1:
