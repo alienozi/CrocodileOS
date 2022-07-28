@@ -1,5 +1,5 @@
 ; Compile: nasm __binaryToDecimal16.asm -f bin -o test.bin
-; function to print binary value as decimal in ax(uses stack)
+; function to print binary value as decimal in eax(uses stack)
 ; Author: Oguz/Totan
 ; see od -t x1 -A n test.bin
 %ifndef __binaryToDecimalx86_def
@@ -13,21 +13,21 @@ __binaryToDecimalx86:
 	push ecx
 	push edx
 	mov bx,sp
-	sub sp,6
-	mov cx,10
+	sub sp,10
+	mov ecx,10
 __binaryToDecimalx86_loop1:
-	xor dx,dx
-	div cx		;division
+	xor edx,edx
+	div ecx		;division
 	add dl, "0"
 	dec bx
 	mov [bx],dl
-	cmp ax, 0
+	cmp eax, 0
 	jne __binaryToDecimalx86_loop1
 	push esi
 	mov si,bx
 	call __printStringx86	;	prints the stored data
 	pop esi
-	add sp,6
+	add sp,10
 	pop edx
 	pop ecx
 	pop ebx		;restores previous values

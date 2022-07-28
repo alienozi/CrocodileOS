@@ -1,5 +1,5 @@
 ; Compile: nasm __printString16.asm -f bin -o test.bin
-; function to print a string saved in bx
+; function to print a string starting from [ds:si]
 ; Author: Totan
 ; see od -t x1 -A n test.bin
 ;set the start of the address in si
@@ -33,8 +33,6 @@ __printStringx86_write:
 	inc si
 	jmp __printStringx86_main_loop
 __printStringx86_end:
-	dec bx
-	dec bx
 	mov [__printStringx86_cursor],bx
 	pop bx
 	mov es, bx
