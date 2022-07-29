@@ -10,19 +10,21 @@ jmp:			;push IP to stack then pop it to ax
 	shr ax,4
 	mov ds,ax
 	mov es,ax
-	mov si,msg1
+	mov bp,0x7000	;set stack and base pointers
+	mov sp,bp
+	mov si,msg1	;display first text
 	call __printStringx86
-
+	
 	mov dx,0x1f6
 
 IDE_HDD_bus_check:
 	mov cx,15
-	mov al,7<<5
-	out dx,al
-	inc dx
-	
-IDE_HDD_bus_check_loop0:
-	in al,dx
+	mov al,7<<5		;the following code segment checks both master and slave IDE drives
+	out dx,al		;at primary and secondary ports
+	inc dx			;currently this bootloader can only locate the drives in primary
+				;and secondary buses since it seems reasonable to just check those
+IDE_HDD_bus_check_loop0:	;the drive of interest for boot might be changed later by us
+	in al,dx		;or personally by user if seems necessary
 	loop IDE_HDD_bus_check_loop0
 	test al,6
 	jz boot_loader_stage1_IDE_HDD	
@@ -42,9 +44,58 @@ IDE_HDD_bus_check_loop1:
 	je IDE_HDD_bus_check
 
 	
-IDE_HDD_not_found:
+IDE_HDD_not_found:		;check for ahci card with pci brute force scan
+
+	mov eax, 0x88000; this value gives 0x80000008 after a 16 bit ror
 	
-hlt
+pci_bus_number_loop:		;brute force pci scan for ahci card with 2 loops
+	ror eax,16		;loop variables are second and third significant bytes of eax
+pci_device_number_loop:		;they were used to simply avoid using stack and increase both
+				;readability and speed(not significant at all but it is good practice)
+	mov dx,0xcf8
+	out dx,eax
+	mov ebx,eax		;store the config address
+	mov dx,0xcfc
+	in eax,dx
+	shl eax,16
+	
+	cmp ax,0x0601
+	je AHCI_CARD_FOUND
+	mov eax,ebx		;load the stored config address
+
+	add ah,8
+	jnc pci_device_number_loop
+	ror eax,16
+	add al,1
+	jnc pci_bus_number_loop
+	
+AHCI_CARD_NOT_FOUND:
+
+
+IDE_HDD_error:
+
+IDE_HDD_drive_fault:
+
+	hlt
+AHCI_CARD_FOUND:
+	mov si,found
+	call __printStringx86
+	mov bl,0x24
+	mov eax,ebx
+	mov dx,0xcf8
+	out dx,eax
+	mov dx,0xcfc
+	in eax,dx		;bar5 value of ahci is read from pci
+	hlt
+	
+%include "__printStringx86.asm"
+%include "__binaryToDecimalx86.asm"
+
+msg1: db 10,"Basil_OS found"
+enter: db 13,0
+found: db "ahci found",0
+err: db "error ",0
+
 boot_loader_stage1_IDE_HDD:
 	mov cl,5
 	
@@ -77,16 +128,4 @@ boot_loader_stage1_IDE_HDD_wait:
 	mov cx,256*15
 	mov di,msg2
 	rep insw
-	mov si,msg2
-	call __printStringx86
-	hlt
-	
-IDE_HDD_error:
-
-IDE_HDD_drive_fault:
-	hlt
-	
-
-%include "__printStringx86.asm"
-	msg1: db 10,"Basil_OS found",13,0
-	err: db "error",0
+		
