@@ -15,41 +15,33 @@ jmp:
 	mov es,ax
 	mov bp,0x7000
 	mov sp,bp
-	mov cx,256
+	mov eax, 0x88000; this value gives 0x80000008 after a 16 bit ror
 	
-loop1:
-	push cx
-	mov cx,32
-loop2:	
-	mov ah,[bp-2]
-	mov al,cl
-	dec al
-	shl al,3
-	shl eax,8
-	mov edx,0x80000000
-	or eax,edx
+pci_bus_number_loop:		
+	ror eax,16		
+pci_device_number_loop:		
+				
 	mov dx,0xcf8
-	mov al,8
 	out dx,eax
+	mov ebx,eax		;store the config address
 	mov dx,0xcfc
 	in eax,dx
-	cmp ax,0xffff
-	je next
 	shr eax,16
-	mov dl,al
-	shr ax,8
+	cmp ah,0xff
+	je skip
+
 	call __binaryToDecimalx86
 	call __printStringx86
-	mov al,dl
-	call __binaryToDecimalx86
-	call __printStringx86
-next:
-	loop loop2
-next_loop:
-	pop cx
-	loop loop1
-	
-the_end:
+skip:
+	mov eax,ebx		;load the stored config address
+
+	add ah,8
+	jnc pci_device_number_loop
+	ror eax,16
+	add al,1
+	jnc pci_bus_number_loop
+
+
 	hlt
 %include "__printStringx86.asm"
 %include "__binaryToDecimalx86.asm"

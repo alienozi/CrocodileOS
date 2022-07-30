@@ -57,9 +57,9 @@ pci_device_number_loop:		;they were used to simply avoid using stack and increas
 	mov ebx,eax		;store the config address
 	mov dx,0xcfc
 	in eax,dx
-	shl eax,16
+	shr eax,16
 	
-	cmp ax,0x0601
+	cmp ax,0x0106
 	je AHCI_CARD_FOUND
 	mov eax,ebx		;load the stored config address
 
@@ -86,6 +86,7 @@ AHCI_CARD_FOUND:
 	out dx,eax
 	mov dx,0xcfc
 	in eax,dx		;bar5 value of ahci is read from pci
+	
 	hlt
 	
 %include "__printStringx86.asm"
