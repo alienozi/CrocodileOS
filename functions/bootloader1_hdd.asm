@@ -1,17 +1,7 @@
 ; Compile: nasm boot.asm -f bin -o test.bin
 ; 
 ; Author: Totan
-	call jmp
-jmp:			;push IP to stack then pop it to ax
-	pop ax		;substract 90 from ax to take fat32 bpb in consideration
-	sub ax,90	;set ds accordingly
-	cli		;we assume that this boot sector is loaded to a address divisable by 16
-	xor dx,dx
-	shr ax,4
-	mov ds,ax
-	mov es,ax
-	mov bp,0x7000	;set stack and base pointers
-	mov sp,bp
+
 	mov si,msg1	;display first text
 	call __printStringx86
 	
@@ -77,6 +67,7 @@ IDE_HDD_error:
 IDE_HDD_drive_fault:
 
 	hlt
+
 AHCI_CARD_FOUND:
 	mov si,found
 	call __printStringx86
@@ -85,8 +76,23 @@ AHCI_CARD_FOUND:
 	mov dx,0xcf8
 	out dx,eax
 	mov dx,0xcfc
-	in eax,dx		;bar5 value of ahci is read from pci
+	in eax,dx
 	
+	;call __binaryToDecimalx86
+	;hlt
+	lgdt [Temporary_GDTR]
+	mov ebx,c0
+	or ebx,1
+	mov c0,ebx
+	
+	mov ebx,eax	;bar5 value of ahci is read from pci
+	mov eax,[0x08:ebx+0xc]	;triple fault occurs dont know why
+	
+	mov ebx,c0
+	and ebx,0xFFFFFFFE
+	mov c0,ebx
+	
+	call __binaryToDecimalx86
 	hlt
 	
 %include "__printStringx86.asm"
@@ -95,8 +101,12 @@ AHCI_CARD_FOUND:
 msg1: db 10,"Basil_OS found"
 enter: db 13,0
 found: db "ahci found",0
-err: db "error ",0
-
+Temporary_GDT:
+	dq 0
+	db 0,0x49,0b10011110,0,0x70,0,0,0
+Temporary_GDTR:
+	dd	Temporary_GDT
+	dw	8*2
 boot_loader_stage1_IDE_HDD:
 	mov cl,5
 	
