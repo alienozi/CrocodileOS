@@ -135,8 +135,8 @@ drive_fault:
 	
 	hlt
 
-	%include "__printStringx86.asm"
-	%include "__binaryToDecimalx86.asm"
+	%include "../functions/__printStringx86.asm"
+	%include "../functions/__binaryToDecimalx86.asm"
 	
 	
 times 510-($-$$) db 0

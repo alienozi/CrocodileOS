@@ -81,22 +81,22 @@ AHCI_CARD_FOUND:
 	;call __binaryToDecimalx86
 	;hlt
 	lgdt [Temporary_GDTR]
-	mov ebx,c0
+	;mov ebx,c0
 	or ebx,1
-	mov c0,ebx
+	;mov c0,ebx
 	
 	mov ebx,eax	;bar5 value of ahci is read from pci
-	mov eax,[0x08:ebx+0xc]	;triple fault occurs dont know why
 	
-	mov ebx,c0
+	
+	;mov ebx,c0
 	and ebx,0xFFFFFFFE
-	mov c0,ebx
+	;mov c0,ebx
 	
-	call __binaryToDecimalx86
+	;call __binaryToDecimalx86
 	hlt
 	
-%include "__printStringx86.asm"
-%include "__binaryToDecimalx86.asm"
+%include "../functions/__printStringx86.asm"
+;%include "../functions/__binaryToDecimalx86.asm"
 
 msg1: db 10,"Basil_OS found"
 enter: db 13,0

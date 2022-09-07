@@ -4,7 +4,7 @@
 ; see od -t x1 -A n test.bin
 %ifndef __binaryToDecimalx86_def
 %define __binaryToDecimalx86_def 0
-%include "__printStringx86.asm"
+%include "../functions/__printStringx86.asm"
 
 __binaryToDecimalx86:
 
