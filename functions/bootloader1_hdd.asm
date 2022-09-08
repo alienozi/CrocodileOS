@@ -98,7 +98,7 @@ AHCI_CARD_FOUND:
 %include "../functions/__printStringx86.asm"
 ;%include "../functions/__binaryToDecimalx86.asm"
 
-msg1: db 10,"Basil_OS found"
+msg1: db 10,"COS found"
 enter: db 13,0
 found: db "ahci found",0
 Temporary_GDT:

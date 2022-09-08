@@ -9,64 +9,43 @@
 %ifndef __printStringx86_def
 %define __printStringx86_def 0
 __printStringx86:
-	push eax			;uses si register for input address (only 16 bit)
-	push ebx			;pushing necessary registers
-	push esi
-	mov bx, es
-	push bx
-	mov bx, [__printStringx86_cursor]	;get cursor
-	mov ax, 0xb800
-	mov es, ax
-	mov ah, 0x0f
-__printStringx86_main_loop:
-	mov al,[si]
-	cmp al,13			;compaire if its 13 which means enter
-	je __printStringx86_enter
-	cmp al,10			;compaire if its 10 which means clear screen
-	je __printStringx86_cls
-__printStringx86_write:
-	cmp al,0
-	je __printStringx86_end
-	mov [es:bx],ax			;characters are written in DMA address for display
-	inc bx
-	inc bx
+	mov ax,0xb800
+	mov gs,ax
+	mov bx,[__printStringx86_cursor]
+	mov ah,0x0f
+__printStringx86_loop:
+	mov al,[ds:si]
 	inc si
-	jmp __printStringx86_main_loop
-__printStringx86_end:
-	mov [__printStringx86_cursor],bx
-	pop bx
-	mov es, bx
-	pop esi				;pops back used registers
-	pop ebx
-	pop eax
-	ret
-__printStringx86_enter:	
-	mov ax, bx
-	mov bl, 160
-	div bl				;finds next rows first entry and sets cursor
+	cmp al,10
+	jne __printStringx86_clear_screen_skip
+	mov bx,80*25*2
+	mov al," "
+__printStringx86_clear_screen_loop:
+	mov [gs:bx-2],ax
+	sub bx,2
+	jnz __printStringx86_clear_screen_loop
+	jmp __printStringx86_loop	
+__printStringx86_clear_screen_skip:
+	
+	cmp al,13
+	jne __printStringx86_enter_skip
+	mov ax,bx
+	mov bl,160
+	div bl
 	inc al
 	mul bl
-	mov bx, ax
-	inc bx
-	inc bx
-	mov ah, 0x0f
-	inc si
-	jmp __printStringx86_main_loop
-__printStringx86_cls:
-	push cx
-	mov bx,80*25*2-2
-	xor cx,cx
-__printStringx86_loop1:
-	mov [es:bx],  cx		;clears screen
-	dec bx
-	dec bx
-	jnz __printStringx86_loop1
-	mov  [__printStringx86_cursor],cx
-	xor bx,bx
-	pop cx
-	inc si
-	jmp __printStringx86_main_loop
-		;continues as if nothing happend from where it is left
-
+	mov bx,ax
+	jmp __printStringx86_loop
+__printStringx86_enter_skip:
+	test al,al
+	jz __printStringx86_end
+	mov ah,0x0f
+	mov [gs:bx],ax
+	add bx,2
+	jmp __printStringx86_loop
+	__printStringx86_end:
+	mov [__printStringx86_cursor],bx
+	ret
+	
 	__printStringx86_cursor: dw 0
 %endif

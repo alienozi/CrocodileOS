@@ -1,4 +1,4 @@
-jmp boot
+call boot
 times 3-($-$$) db 0
 NAME:		db "BASIL_OS"
 BPB_BytsPerSec:	dw 512
