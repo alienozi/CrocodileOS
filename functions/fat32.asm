@@ -1,6 +1,6 @@
 call boot
 times 3-($-$$) db 0
-NAME:		db "BASIL_OS"
+NAME:		db "COS     "
 BPB_BytsPerSec:	dw 512
 BPB_SecPerClus:	db 8
 BPB_RsvdSecCnt:	dw 16
@@ -24,7 +24,7 @@ BS_DrvNum:	db 0x80
 BS_Reserved1:	db 0
 BS_BootSig:	db 0x29
 BS_VolID:	dd 0x89abcdef
-BS_VolLab:	db "BASIL_OS   "
+BS_VolLab:	db "COS        "
 BS_FilSysType:	db "FAT32   "
 boot:
 

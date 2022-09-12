@@ -172,10 +172,14 @@ directory_search:
 	jz directory_search2
 	
 	
-	mov eax,[bx+2]
+	xor eax,eax
 	mov ecx,[bx+10]
 	mov di,IDENTIFY_PACKET_DEVICE_DATA+512
-	shr ecx,9
+	test cx,2047
+	setnz ah
+	shl ah,3
+	add ecx,eax
+	mov eax,[bx+2]
 	call __IDE_ATAPI_READx86
 	
 	jmp IDENTIFY_PACKET_DEVICE_DATA+512
