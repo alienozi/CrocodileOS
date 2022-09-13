@@ -1,3 +1,6 @@
+; Compile: nasm __printString16.asm -f bin -o test.bin
+; function to read sectors from an ide atapi drive
+; Author: Totan
 ;ds:di hold the destination address of the read data
 ;ecx register holds the number of sectors to be read
 ;eax register holds the LBA of first sector to be read
