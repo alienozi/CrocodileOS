@@ -7,9 +7,7 @@ bits 16
 	mov es,bx
 	mov bp,0x7000	;set stack and base pointers
 	mov sp,bp
-	;mov al,0xd0
-	;mov dx,0x64
-	;out dx,al
+	
 
 %include "../functions/bootloader1_hdd.asm"
 jmp second_stage_boot

@@ -3,7 +3,7 @@
 ; Author: Totan
 
 	mov si,msg1	;display first text
-	call __printStringx86
+	call __printString_16
 	
 	mov dx,0x1f6
 
@@ -70,7 +70,7 @@ IDE_HDD_drive_fault:
 
 AHCI_CARD_FOUND:
 	mov si,found
-	call __printStringx86
+	call __printString_16
 	mov bl,0x24
 	mov eax,ebx
 	mov dx,0xcf8
@@ -78,7 +78,7 @@ AHCI_CARD_FOUND:
 	mov dx,0xcfc
 	in eax,dx
 	
-	;call __binaryToDecimalx86
+	;call __binaryToDecimal_16
 	;hlt
 	lgdt [Temporary_GDTR]
 	;mov ebx,c0
@@ -92,11 +92,11 @@ AHCI_CARD_FOUND:
 	and ebx,0xFFFFFFFE
 	;mov c0,ebx
 	
-	;call __binaryToDecimalx86
+	;call __binaryToDecimal_16
 	hlt
 	
-%include "../functions/__printStringx86.asm"
-;%include "../functions/__binaryToDecimalx86.asm"
+%include "../functions16/__printString_16.asm"
+;%include "../functions16/__binaryToDecimal_16.asm"
 
 msg1: db 10,"COS found"
 enter: db 13,0

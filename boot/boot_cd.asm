@@ -4,12 +4,16 @@ ip_get:
 	pop bx		;push IP to stack then pop it to ax
 	cli		;we assume that this boot sector is loaded to a address divisable by 16
 	shr bx,4
+	mov ax,bx
 	mov ds,bx
+	shl ax,4
 	mov es,bx
+	mov [Boot_loader_offset],ax
 	mov bp,0x7000	;set stack and base pointers
 	mov sp,bp
 	mov si,msg1
-	call __printStringx86
+	call __printString_16
+	
 	
 	xor ax,ax
 	xor bx,bx
@@ -44,7 +48,7 @@ skip_loop_2:
 	
 IDE_DEVICE_NOT_FOUND:
 	mov si,msg2
-	call __printStringx86
+	call __printString_16
 	hlt
 	
 IDE_DEVICE_DETECTED:
@@ -76,41 +80,74 @@ IDE_DEVICE_NO_ERROR:
 drive_fault:
 	
 	hlt
-
-	%include "../functions/__printStringx86.asm"
-	%include "../functions/__binaryToDecimalx86.asm"
-	
+	GDT:
+	dd 0,0
+	dw 0xffff
+        dw 0x0
+        db 0x0
+        db 0b10011010
+        db 0b11001111
+        db 0x0
+        dw 0xffff
+        dw 0x0
+        db 0x0
+        db 0b10010010
+        db 0b11001111
+        db 0x0
+        
+GDT_Descriptor:
+	dw GDT-GDT_Descriptor-1
+	dd 0
+Boot_loader_offset:
+	dd 0
+	%include "../functions16/__printString_16.asm"
+	%include "../functions16/__binaryToDecimal_16.asm"
+	%include "../functions16/__enterPM_16.asm"
 	
 times 510-($-$$) db 0
 dw 0xaa55
 	ATAPI_DEVICE_FOUND:		;stores the identify packet device data
+	
 	pop bx
 	sub dx,7		;substract 7 to get data port
+	mov si,msg3
+	call __printString_16
 	
-	mov si,msg1
-	call __printStringx86
 	mov di,IDENTIFY_PACKET_DEVICE_DATA
 	mov cx,256
 	rep insw		;recieve the 512 byte data
-
+	mov cx,dx
 	
-	mov di,IDENTIFY_PACKET_DEVICE_DATA+512
-	mov si,kernel.dir
-	call __IDE_CD_FILE_READx86
-	call __binaryToDecimalx86
+	mov bx,GDT_Descriptor
+	mov edi,[Boot_loader_offset]
+	lea esi,[edi+GDT]
+	mov [GDT_Descriptor+2],esi
+	
+	call __enterPM_16
+bits 32
+	mov dx,cx
+	push edi
+	lea esi,[kernel.dir+edi]
+	lea edi,[IDENTIFY_PACKET_DEVICE_DATA+512+edi]
+	mov ax,16
+	mov es,ax
+	call __IDE_CD_FILE_READ_32
 	jmp IDENTIFY_PACKET_DEVICE_DATA+512
-	
+	%include "../functions32/__IDE_CD_FILE_READ_32.asm"
+	%include "../functions32/__printString_32.asm"
+bits 16
 directory_search_not_found:
 	mov si,msg4
-	call __printStringx86
+	call __printString_16
 	hlt
-	%include "../functions/__IDE_CD_FILE_READx86.asm"
+
 		
-msg1: db 10,"operating system found"
+msg1: db 10,"Operating system found"
 enter: db 13,0
 msg2: db "IDE device not found",13,0
 msg3: db "IDE device found",13,0
 msg4: db "kernel.bin not found",0
+
 kernel.dir: db "/KERNEL/KERNEL.BIN;1/",0
 times 2048-($-$$) db 0
 IDENTIFY_PACKET_DEVICE_DATA:
