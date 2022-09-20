@@ -3,7 +3,7 @@
 ; Author: Oguz/Totan
 %ifndef __binaryToDecimal_16_def
 %define __binaryToDecimal_16_def 0
-%include "../functions16/__printString_16.asm"
+%include "./functions16/__printString_16.asm"
 
 __binaryToDecimal_16:
 

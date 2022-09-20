@@ -80,5 +80,5 @@ __IDE_CD_FILE_READ_32_fail:
 	mov ebp,[ebp]
 	add sp,12
 	ret
-%include "../functions32/__IDE_ATAPI_READ_32.asm"
+%include "./functions32/__IDE_ATAPI_READ_32.asm"
 %endif

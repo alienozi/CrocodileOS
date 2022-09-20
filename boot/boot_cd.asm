@@ -100,9 +100,9 @@ GDT_Descriptor:
 	dd 0
 Boot_loader_offset:
 	dd 0
-	%include "../functions16/__printString_16.asm"
-	%include "../functions16/__binaryToDecimal_16.asm"
-	%include "../functions16/__enterPM_16.asm"
+	%include "./functions16/__printString_16.asm"
+	%include "./functions16/__binaryToDecimal_16.asm"
+	%include "./functions16/__enterPM_16.asm"
 	
 times 510-($-$$) db 0
 dw 0xaa55
@@ -132,9 +132,9 @@ bits 32
 	mov ax,16
 	mov es,ax
 	call __IDE_CD_FILE_READ_32
-	jmp IDENTIFY_PACKET_DEVICE_DATA+512
-	%include "../functions32/__IDE_CD_FILE_READ_32.asm"
-	%include "../functions32/__printString_32.asm"
+	jmp IDENTIFY_PACKET_DEVICE_DATA+512+24
+	%include "./functions32/__IDE_CD_FILE_READ_32.asm"
+	%include "./functions32/__printString_32.asm"
 bits 16
 directory_search_not_found:
 	mov si,msg4
