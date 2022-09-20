@@ -7,7 +7,7 @@ int main(int argn,char **argv){
 	int width=atoi(*(argv+2));
 	int height=atoi(*(argv+3));
 	unsigned char* data_in=malloc(4*width*height);
-	unsigned short* data_out=malloc((((width*height)>>1)+width)*2);
+	unsigned char* data_out=malloc(((width*height)>>1)+width);
 	unsigned int data_len=0;
 	fread(data_in,1,4*width*height,INPUT);
 	for(int h=0;h<height;h+=2){
@@ -16,7 +16,7 @@ int main(int argn,char **argv){
 				if(*(data_in+(h*width+w)*4)<127){
 				
 					if(*(data_in+((1+h)*width+w)*4)<127){
-						*(data_out+data_len)=219+();
+						*(data_out+data_len)=219;
 					}else{
 						*(data_out+data_len)=223;
 					}

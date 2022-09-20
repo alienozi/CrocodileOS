@@ -22,7 +22,7 @@ int main(int argn,char **argv){
 	fread(data_in,1,size,INPUT);
 	fclose(INPUT);
 	*(data_out)=0;
-	strcat(data_out,"bits 32\n");
+	strcat(data_out,"bits 32\njmp kernel\n");
 	*(data_out+size)=0;
 	*(data_in+size)=0;
 	strncat(data_out,data_in,strchr(data_in,'@')-data_in);
@@ -82,6 +82,18 @@ int main(int argn,char **argv){
 				strcat(data_out,"\t db");
 				strncat(data_out,data_in,data_ref2-data_in-1);
 				strcat(data_out,",0\n");
+			}else if(strncmp(data_in,"\t.comm\t",strlen("\t.comm\t"))==0){
+				data_in+=strlen("\t.comm\t");
+				strcat(data_out,"\talign ");
+				strncat(data_out,strchr(strchr(data_in,',')+1,',')+1,strchr(data_in,10)-strchr(strchr(data_in,',')+1,','));
+				strncat(data_out,data_in,strchr(data_in,',')-data_in);
+				strcat(data_out,":\t");
+				switch(*(strchr(data_in,',')+1)){
+					case '1':strcat(data_out," db 0\n");break;
+					case '2':strcat(data_out," dw 0\n");break;
+					case '4':strcat(data_out," dd 0\n");break;
+					case '8':strcat(data_out," dq 0\n");break;
+				}
 			}else if(*(data_in)=='#'||('0'<=*(data_in)&&'9'>=*(data_in))){
 				//printf("dummy_label\n");
 			}else if(strncmp(data_in,"\t.",2)==0){

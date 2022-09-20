@@ -132,7 +132,7 @@ bits 32
 	mov ax,16
 	mov es,ax
 	call __IDE_CD_FILE_READ_32
-	jmp IDENTIFY_PACKET_DEVICE_DATA+512+24
+	jmp IDENTIFY_PACKET_DEVICE_DATA+512
 	%include "./functions32/__IDE_CD_FILE_READ_32.asm"
 	%include "./functions32/__printString_32.asm"
 bits 16
@@ -147,7 +147,6 @@ enter: db 13,0
 msg2: db "IDE device not found",13,0
 msg3: db "IDE device found",13,0
 msg4: db "kernel.bin not found",0
-
 kernel.dir: db "/KERNEL/KERNEL.BIN;1/",0
 times 2048-($-$$) db 0
 IDENTIFY_PACKET_DEVICE_DATA:
