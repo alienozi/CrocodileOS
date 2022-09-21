@@ -34,11 +34,7 @@ _L2:
 	leave
 	ret
 _LFE0:
-_LC0:
-	 db	"test",0
-_LC1:
-	 db	"deneme123456789abcdef",0
-kernel:
+printI:
 _LFB1:
 	       
 	push	ebp
@@ -47,37 +43,57 @@ _LFB1:
 	call	__x86.get_pc_thunk.ax
  OFFSET_LABEL1:
 	add	eax,  -OFFSET_LABEL1
-	lea	edx, [_LC0+eax]
-	mov	DWORD [-12+ebp], edx
-	lea	eax, [_LC1+eax]
-	mov	DWORD [-8+ebp], eax
-	mov	BYTE [-15+ebp], 111
-	mov	WORD [-14+ebp], 222
-	mov	DWORD [-4+ebp], 333
-	push	240
-	push	DWORD [-12+ebp]
-	call	printS
-	add	esp, 8
-	push	15
-	push	DWORD [-8+ebp]
-	call	printS
-	add	esp, 8
+	mov	DWORD [-8+ebp], 753664
+	jmp	_L6
+_L9:
+	mov	DWORD [-4+ebp], 0
+	jmp	_L7
+_L8:
+	mov	edx, DWORD [8+ebp]
+	lea	eax, [4+edx]
+	mov	DWORD [8+ebp], eax
+	mov	eax, DWORD [-8+ebp]
+	lea	ecx, [4+eax]
+	mov	DWORD [-8+ebp], ecx
+	mov	edx, DWORD [edx]
+	mov	DWORD [eax], edx
+	add	DWORD [-4+ebp], 1
+_L7:
+	mov	eax, DWORD [-4+ebp]
+	cmp	eax, DWORD [12+ebp]
+	jl	_L8
+	mov	eax, 80
+	sub	eax, DWORD [12+ebp]
+	sal	eax, 2
+	add	DWORD [-8+ebp], eax
+_L6:
+	mov	eax, DWORD [8+ebp]
+	mov	eax, DWORD [eax]
+	test	eax, eax
+	jne	_L9
+	nop
+	leave
+	ret
+_LFE1:
+kernel:
+_LFB2:
+	       
+	push	ebp
+	mov	ebp, esp
+	call	__x86.get_pc_thunk.ax
+ OFFSET_LABEL2:
+	add	eax,  -OFFSET_LABEL2
+	hlt
 	hlt
 	hlt
 
 	mov	eax, 1
-	leave
-	ret
-_LFE1:
-p.1506: dd 753664
-	align 4
-le_int.1514:	 dd 0
-	align 2
-le_short.1513:	 dw 0
-	align 1
-le_char.1512:	 db 0
-__x86.get_pc_thunk.ax:
-_LFB2:
-	mov	eax, DWORD [esp]
+	pop	ebp
 	ret
 _LFE2:
+p.1506: dd 753664
+__x86.get_pc_thunk.ax:
+_LFB3:
+	mov	eax, DWORD [esp]
+	ret
+_LFE3:

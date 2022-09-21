@@ -1,6 +1,7 @@
 ; function to print a string starting from [ds:esi]
 ; Author: Totan
 ;set the start address of the string in esi
+;ah holds the font type
 ;write 13 for enter
 ;write 10 for clear screen
 ;write 0 to stop writing

@@ -16,6 +16,7 @@ __IDE_CD_FILE_READ_32:
 	mov ebp,esp
 	push esi
 	push edi
+	sub esp,4
 	mov eax,16
 	mov ecx,1
 	call __IDE_ATAPI_READ_32
@@ -50,7 +51,7 @@ __IDE_CD_FILE_READ_32_string_lenght_loop:
 	cmp ch,"/"
 	jne __IDE_CD_FILE_READ_32_string_lenght_loop
 	
-
+	mov [esp-9],cl
 	xor eax,eax
 __IDE_CD_FILE_READ_32_directory_scan_loop:
 	mov edi,ebx
@@ -58,7 +59,7 @@ __IDE_CD_FILE_READ_32_directory_scan_loop:
 	mov ch,[ebx+32]
 	
 	add ebx,eax
-	test ch,ch
+	test al,al
 	jz __IDE_CD_FILE_READ_32_fail
 	cmp ch,cl
 	jne __IDE_CD_FILE_READ_32_directory_scan_loop
@@ -68,17 +69,17 @@ __IDE_CD_FILE_READ_32_directory_scan_loop:
 	mov esi,[ebp-4]
 	repe cmpsb
 	je __IDE_CD_FILE_READ_32_directory_search_loop
+	mov cl,[esp-9]
 	add ebx,eax
 	jmp __IDE_CD_FILE_READ_32_directory_scan_loop
 	
 	
 __IDE_CD_FILE_READ_32_success:
-	inc ah
+	mov al,1
 __IDE_CD_FILE_READ_32_fail:
 	xor ecx,ecx
-	mov al,ah
 	mov ebp,[ebp]
-	add sp,12
+	add sp,16
 	ret
 %include "./functions32/__IDE_ATAPI_READ_32.asm"
 %endif

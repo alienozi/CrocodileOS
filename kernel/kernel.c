@@ -10,17 +10,18 @@ void printS(unsigned char *str,unsigned char color){
 	}
 	return;
 	}
-short kernel()
-{	static char le_char=0;
-	static short le_short=0;
-	static int le_int=0;
-	char* test="test";
-	char* test2="deneme123456789abcdef";
-	char test111=111;short test222=222;int test333=333;
-	short* p;
-	printS(test,0xf0);
-	printS(test2,0x0f);
-	
+void printI(unsigned int *img,int width){
+	unsigned int *p=(unsigned int*)0xb8000;
+	while((*(img))!=0){
+		for(int w=0;w<width;w++){
+			(*(p++))=(*(img++));
+		}
+		p+=80-width;
+	}
+	return;
+}
+int kernel(){
+	asm volatile("hlt");
 	asm volatile("hlt");
 
 	

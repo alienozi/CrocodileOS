@@ -132,9 +132,19 @@ bits 32
 	mov ax,16
 	mov es,ax
 	call __IDE_CD_FILE_READ_32
+	mov esi,0x7c00+icon.dir
+	mov edi,0x7c00+2048
+	call __IDE_CD_FILE_READ_32
+	mov esi,0x7c00+2048
+	mov edi,0xb8000
+	mov ecx,4000
+	rep movsb
+	hlt
 	jmp IDENTIFY_PACKET_DEVICE_DATA+512
+	
 	%include "./functions32/__IDE_CD_FILE_READ_32.asm"
 	%include "./functions32/__printString_32.asm"
+	%include "./functions32/__binaryToDecimal_32.asm"
 bits 16
 directory_search_not_found:
 	mov si,msg4
@@ -147,6 +157,7 @@ enter: db 13,0
 msg2: db "IDE device not found",13,0
 msg3: db "IDE device found",13,0
 msg4: db "kernel.bin not found",0
-kernel.dir: db "/KERNEL/KERNEL.BIN;1/",0
+kernel.dir: db "/KERNEL/KERNEL.BIN;1/",0,0,0
+icon.dir: db "/HOME/ICON.STR;1/",0
 times 2048-($-$$) db 0
 IDENTIFY_PACKET_DEVICE_DATA:
