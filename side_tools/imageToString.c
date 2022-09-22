@@ -43,7 +43,7 @@ int main(int argn,char **argv){
 					switch(condition){
 					case 1:*(data_out++)=0x20;break;
 					case 2:*(data_out++)=0x2f;break;
-					case 3:*(data_out++)=0x02;break;
+					case 3:*(data_out++)=0x22;break;
 					case 4:*(data_out++)=0x21;break;
 					}
 					break;
@@ -62,19 +62,19 @@ int main(int argn,char **argv){
 				switch(condition){
 					case 1:
 					*(data_out++)=0xdc;
-					*(data_out++)=0x00;
+					*(data_out++)=0x10;
 					break;
 					case 2:
 					*(data_out++)=0xdb;
-					*(data_out++)=0x0f;
+					*(data_out++)=0x1f;
 					break;
 					case 3:
 					*(data_out++)=0xdc;
-					*(data_out++)=0x02;
+					*(data_out++)=0x12;
 					break;
 					case 4:
 					*(data_out++)=0xdf;
-					*(data_out++)=0x01;
+					*(data_out++)=0x11;
 					break;
 				}
 			}

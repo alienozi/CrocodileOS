@@ -45,11 +45,17 @@ skip_loop_2:
 	mov al,1<<4
 	test bl,2
 	jnz IDE_SM_SCAN_LOOP
-	
-IDE_DEVICE_NOT_FOUND:
-	mov si,msg2
-	call __printString_16
-	hlt
+	mov bx,GDT_Descriptor
+	mov edi,[Boot_loader_offset]
+	lea esi,[edi+GDT]
+	mov [GDT_Descriptor+2],esi
+	call __enterPM_16
+bits 32
+	push edi
+	push ebp
+	mov ebp, esp
+	jmp IDE_DEVICE_NOT_FOUND
+bits 16
 	
 IDE_DEVICE_DETECTED:
 	
@@ -154,7 +160,66 @@ bits 32
 	mov edi,[ebp+4]
 	mov edi,[edi+IDENTIFY_PACKET_DEVICE_DATA+512+16]
 	jmp edi
+
+IDE_DEVICE_NOT_FOUND:		;check for ahci card with pci brute force scan
+
+	mov eax, 0x88000	;this value gives 0x80000008 after a 16 bit ror
 	
+pci_bus_number_loop:		;brute force pci scan for ahci card with 2 loops
+	ror eax,16		;loop variables are second and third significant bytes of eax
+pci_device_number_loop:		;they were used to simply avoid using stack and increase both
+				;readability and speed(not significant at all but it is good practice)
+	mov dx,0xcf8
+	out dx,eax
+	mov ebx,eax		;store the config address
+	mov dx,0xcfc
+	in eax,dx
+	shr eax,8
+	
+	cmp ax,0x010601
+	je AHCI_CARD_FOUND
+	mov eax,ebx		;load the stored config address
+
+	add ah,8
+	jnc pci_device_number_loop
+	ror eax,16
+	add al,1
+	jnc pci_bus_number_loop
+	
+AHCI_SATA_DEVICE_NOT_FOUND:
+AHCI_CARD_NOT_FOUND:
+	lea esi,[edi+msg2]
+	mov ah,0x0f
+	call __printString_32
+	hlt
+AHCI_CARD_FOUND:
+	mov edx,ebx
+	lea esi,[edi+msg5]
+	mov ah,0x0f
+	call __printString_32
+	xor ecx,ecx
+	mov eax,edx
+	mov al,0x24
+	mov dx,0xcf8
+	out dx,eax		;loads bar5 address
+	mov dx,0xcfc
+	in eax,dx
+	and al,0xf8
+	mov edx,eax
+	mov cl,[eax+0x00]
+	add eax,0x100-0x80
+	inc cl
+AHCI_PORT_SCAN:
+	add eax,0x80
+	mov ebx,[eax+0x24]
+	cmp ebx,0xeb140101
+	loopne AHCI_PORT_SCAN
+	jne AHCI_SATA_DEVICE_NOT_FOUND
+	
+	call __binaryToDecimal_32
+	hlt
+
+
 	%include "./functions32/__IDE_CD_FILE_READ_32.asm"
 	%include "./functions32/__printString_32.asm"
 	%include "./functions32/__binaryToDecimal_32.asm"
@@ -168,9 +233,10 @@ CD_FILE_READ_FAIL:
 		
 msg1: db 10,"Operating system found"
 enter: db 13,0
-msg2: db "IDE device not found",13,0
+msg2: db 13,"storage device not found",0
 msg3: db "IDE device found",13,0
 msg4: db "CD FILE READ ERROR",0
+msg5: db 13,"AHCI Controller found",13,0
 kernel.dir: db "/KERNEL/KERNEL.BIN;1/",0,0,0
 icon.dir: db "/HOME/CD_USER/ICON.STR;1/",0
 boot_parameters.dir: db "/BOOT/BOOT_PARAMETERS.BIN;1/",0

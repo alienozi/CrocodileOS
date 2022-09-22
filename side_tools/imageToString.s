@@ -457,7 +457,7 @@ main:
 	movq	-32(%rbp), %rax
 	leaq	1(%rax), %rdx
 	movq	%rdx, -32(%rbp)
-	movb	$2, (%rax)
+	movb	$34, (%rax)
 	jmp	.L45
 .L44:
 	movq	-32(%rbp), %rax
@@ -636,7 +636,7 @@ main:
 	movq	-32(%rbp), %rax
 	leaq	1(%rax), %rdx
 	movq	%rdx, -32(%rbp)
-	movb	$0, (%rax)
+	movb	$16, (%rax)
 	jmp	.L59
 .L69:
 	movq	-32(%rbp), %rax
@@ -646,7 +646,7 @@ main:
 	movq	-32(%rbp), %rax
 	leaq	1(%rax), %rdx
 	movq	%rdx, -32(%rbp)
-	movb	$15, (%rax)
+	movb	$31, (%rax)
 	jmp	.L59
 .L67:
 	movq	-32(%rbp), %rax
@@ -656,7 +656,7 @@ main:
 	movq	-32(%rbp), %rax
 	leaq	1(%rax), %rdx
 	movq	%rdx, -32(%rbp)
-	movb	$2, (%rax)
+	movb	$18, (%rax)
 	jmp	.L59
 .L66:
 	movq	-32(%rbp), %rax
@@ -666,7 +666,7 @@ main:
 	movq	-32(%rbp), %rax
 	leaq	1(%rax), %rdx
 	movq	%rdx, -32(%rbp)
-	movb	$1, (%rax)
+	movb	$17, (%rax)
 	jmp	.L59
 .L84:
 	nop

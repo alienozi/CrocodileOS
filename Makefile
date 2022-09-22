@@ -16,3 +16,9 @@ COS.iso: $(shell find iso/ -type f)
 	
 ./iso/boot/boot_parameters.bin: ./boot/boot_parameters.asm
 	nasm -f bin ./boot/boot_parameters.asm -o ./iso/boot/boot_parameters.bin;
+	
+./iso/home/CD_USER/icon.str: ./side_tools/icon.data ./side_tools/imageToString
+	./side_tools/imageToString ./side_tools/icon.data ./side_tools/image.asm 80 50;nasm ./side_tools/image.asm -o ./iso/home/CD_USER/icon.str
+
+./side_tools/imageToString: ./side_tools/imageToString.c
+	gcc ./side_tools/imageToString.c -o ./side_tools/imageToString
