@@ -127,28 +127,42 @@ dw 0xaa55
 bits 32
 	mov dx,cx
 	push edi
-	lea esi,[kernel.dir+edi]
-	lea edi,[IDENTIFY_PACKET_DEVICE_DATA+512+edi]
-	mov ax,16
-	mov es,ax
+	push ebp
+	mov ebp, esp
+	lea esi,[icon.dir+edi]
+	lea edi,[edi+IDENTIFY_PACKET_DEVICE_DATA+512]
 	call __IDE_CD_FILE_READ_32
-	mov esi,0x7c00+icon.dir
-	mov edi,0x7c00+2048
-	call __IDE_CD_FILE_READ_32
-	mov esi,0x7c00+2048
+	test al,al
+	jz CD_FILE_READ_FAIL
+	mov esi,[ebp+4]
 	mov edi,0xb8000
+	lea esi,[esi+IDENTIFY_PACKET_DEVICE_DATA+512]
 	mov ecx,4000
 	rep movsb
-	hlt
-	jmp IDENTIFY_PACKET_DEVICE_DATA+512
+	mov edi,[ebp+4]
+	lea esi,[edi+boot_parameters.dir]
+	lea edi,[edi+IDENTIFY_PACKET_DEVICE_DATA+512]
+	call __IDE_CD_FILE_READ_32
+	test al,al
+	jz CD_FILE_READ_FAIL
+	mov edi,[ebp+4]
+	lea esi,[edi+kernel.dir]
+	mov edi,[edi+IDENTIFY_PACKET_DEVICE_DATA+512+16]
+	call __IDE_CD_FILE_READ_32
+	test al,al
+	jz CD_FILE_READ_FAIL
+	mov edi,[ebp+4]
+	mov edi,[edi+IDENTIFY_PACKET_DEVICE_DATA+512+16]
+	jmp edi
 	
 	%include "./functions32/__IDE_CD_FILE_READ_32.asm"
 	%include "./functions32/__printString_32.asm"
 	%include "./functions32/__binaryToDecimal_32.asm"
-bits 16
-directory_search_not_found:
-	mov si,msg4
-	call __printString_16
+CD_FILE_READ_FAIL:
+	mov esi,[ebp+4]
+	lea esi,[esi+msg4]
+	mov ah,0xf0
+	call __printString_32
 	hlt
 
 		
@@ -156,8 +170,10 @@ msg1: db 10,"Operating system found"
 enter: db 13,0
 msg2: db "IDE device not found",13,0
 msg3: db "IDE device found",13,0
-msg4: db "kernel.bin not found",0
+msg4: db "CD FILE READ ERROR",0
 kernel.dir: db "/KERNEL/KERNEL.BIN;1/",0,0,0
-icon.dir: db "/HOME/ICON.STR;1/",0
+icon.dir: db "/HOME/CD_USER/ICON.STR;1/",0
+boot_parameters.dir: db "/BOOT/BOOT_PARAMETERS.BIN;1/",0
+double_enter: db 13,13,0
 times 2048-($-$$) db 0
 IDENTIFY_PACKET_DEVICE_DATA:

@@ -10,20 +10,9 @@ void printS(unsigned char *str,unsigned char color){
 	}
 	return;
 	}
-void printI(unsigned int *img,int width){
-	unsigned int *p=(unsigned int*)0xb8000;
-	while((*(img))!=0){
-		for(int w=0;w<width;w++){
-			(*(p++))=(*(img++));
-		}
-		p+=80-width;
-	}
-	return;
-}
 int kernel(){
-	asm volatile("hlt");
-	asm volatile("hlt");
 
+	printS("test",0xf0);
 	
 	/*asm volatile("mov ebx,0xb8000\n");
 	for(i=15;i>0;i--){

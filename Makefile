@@ -1,6 +1,6 @@
 
 COS.iso: $(shell find iso/ -type f)
-	mkisofs -o ./COS.iso -no-emul-boot -b  boot/boot.bin ./iso/
+	mkisofs -o ./COS.iso -iso-level 2 -no-emul-boot -b  boot/boot.bin ./iso/
 	
 ./iso/boot/boot.bin: $(shell find boot/ functions32/ functions16/ -type f)
 	nasm ./boot/boot_cd.asm -f bin -o ./iso/boot/boot.bin
@@ -13,3 +13,6 @@ COS.iso: $(shell find iso/ -type f)
 	
 ./iso/kernel/kernel.bin: ./kernel/kernel.asm
 	nasm -f bin ./kernel/kernel.asm -o ./iso/kernel/kernel.bin;
+	
+./iso/boot/boot_parameters.bin: ./boot/boot_parameters.asm
+	nasm -f bin ./boot/boot_parameters.asm -o ./iso/boot/boot_parameters.bin;

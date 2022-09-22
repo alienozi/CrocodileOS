@@ -51,13 +51,12 @@ __IDE_CD_FILE_READ_32_string_lenght_loop:
 	cmp ch,"/"
 	jne __IDE_CD_FILE_READ_32_string_lenght_loop
 	
-	mov [esp-9],cl
+	mov [ebp-9],cl
 	xor eax,eax
 __IDE_CD_FILE_READ_32_directory_scan_loop:
 	mov edi,ebx
 	mov al,[ebx]
 	mov ch,[ebx+32]
-	
 	add ebx,eax
 	test al,al
 	jz __IDE_CD_FILE_READ_32_fail
@@ -69,13 +68,13 @@ __IDE_CD_FILE_READ_32_directory_scan_loop:
 	mov esi,[ebp-4]
 	repe cmpsb
 	je __IDE_CD_FILE_READ_32_directory_search_loop
-	mov cl,[esp-9]
+	mov cl,[ebp-9]
 	add ebx,eax
 	jmp __IDE_CD_FILE_READ_32_directory_scan_loop
 	
 	
 __IDE_CD_FILE_READ_32_success:
-	mov al,1
+	mov ax,1
 __IDE_CD_FILE_READ_32_fail:
 	xor ecx,ecx
 	mov ebp,[ebp]

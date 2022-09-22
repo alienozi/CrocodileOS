@@ -8,7 +8,7 @@
 __binaryToDecimal_32:
 
 	push ebp
-	push 0
+	push dword 0
 	mov ebp,esp
 	mov ebx,esp
 	sub esp,12
