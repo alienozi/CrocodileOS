@@ -12,7 +12,11 @@ void printS(unsigned char *str,unsigned char color){
 	}
 int kernel(){
 
-	printS("test",0xf0);
+	printS("test",0x02);
+	printS("test",0x02);
+	printS("test",0x02);
+	printS("test",0x02);
+	printS("test",0x02);
 	
 	/*asm volatile("mov ebx,0xb8000\n");
 	for(i=15;i>0;i--){

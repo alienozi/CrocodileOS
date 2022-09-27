@@ -41,17 +41,39 @@ _LFB1:
 	       
 	push	ebp
 	mov	ebp, esp
-	call	__x86.get_pc_thunk.ax
+	push	ebx
+	call	__x86.get_pc_thunk.bx
  OFFSET_LABEL1:
-	add	eax,  -OFFSET_LABEL1
-	push	240
-	lea	eax, [_LC0+eax]
+	add	ebx,  -OFFSET_LABEL1
+	push	2
+	lea	eax, [_LC0+ebx]
+	push	eax
+	call	printS
+	add	esp, 8
+	push	2
+	lea	eax, [_LC0+ebx]
+	push	eax
+	call	printS
+	add	esp, 8
+	push	2
+	lea	eax, [_LC0+ebx]
+	push	eax
+	call	printS
+	add	esp, 8
+	push	2
+	lea	eax, [_LC0+ebx]
+	push	eax
+	call	printS
+	add	esp, 8
+	push	2
+	lea	eax, [_LC0+ebx]
 	push	eax
 	call	printS
 	add	esp, 8
 	hlt
 
 	mov	eax, 1
+	mov	ebx, DWORD [-4+ebp]
 	leave
 	ret
 _LFE1:
@@ -61,3 +83,8 @@ _LFB2:
 	mov	eax, DWORD [esp]
 	ret
 _LFE2:
+__x86.get_pc_thunk.bx:
+_LFB3:
+	mov	ebx, DWORD [esp]
+	ret
+_LFE3:

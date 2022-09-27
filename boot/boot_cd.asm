@@ -84,8 +84,8 @@ IDE_DEVICE_NO_ERROR:
 
 
 drive_fault:
-	
 	hlt
+	
 	GDT:
 	dd 0,0
 	dw 0xffff
@@ -129,13 +129,13 @@ dw 0xaa55
 	lea esi,[edi+GDT]
 	mov [GDT_Descriptor+2],esi
 	
-	call __enterPM_16
+	call __enterPM_16	;enters 32 bit protected mode
 bits 32
 	mov dx,cx
 	push edi
 	push ebp
 	mov ebp, esp
-	lea esi,[icon.dir+edi]
+	lea esi,[icon.dir+edi]				;loads icon to ram then to screen
 	lea edi,[edi+IDENTIFY_PACKET_DEVICE_DATA+512]
 	call __IDE_CD_FILE_READ_32
 	test al,al
@@ -148,14 +148,14 @@ bits 32
 	mov edi,[ebp+4]
 	lea esi,[edi+boot_parameters.dir]
 	lea edi,[edi+IDENTIFY_PACKET_DEVICE_DATA+512]
-	call __IDE_CD_FILE_READ_32
+	call __IDE_CD_FILE_READ_32			;loads boot parameters
 	test al,al
 	jz CD_FILE_READ_FAIL
 	mov edi,[ebp+4]
 	lea esi,[edi+kernel.dir]
 	mov edi,[edi+IDENTIFY_PACKET_DEVICE_DATA+512+16]
-	call __IDE_CD_FILE_READ_32
-	test al,al
+	call __IDE_CD_FILE_READ_32			;loads the kernel as specified 
+	test al,al					;in boot parameter file
 	jz CD_FILE_READ_FAIL
 	mov edi,[ebp+4]
 	mov edi,[edi+IDENTIFY_PACKET_DEVICE_DATA+512+16]
@@ -176,7 +176,7 @@ pci_device_number_loop:		;they were used to simply avoid using stack and increas
 	in eax,dx
 	shr eax,8
 	
-	cmp ax,0x010601
+	cmp eax,0x010601
 	je AHCI_CARD_FOUND
 	mov eax,ebx		;load the stored config address
 
@@ -206,17 +206,18 @@ AHCI_CARD_FOUND:
 	in eax,dx
 	and al,0xf8
 	mov edx,eax
-	mov cl,[eax+0x00]
-	add eax,0x100-0x80
-	inc cl
+	mov ebx,[eax+0x0c]
+	add eax,0x80
+	mov ecx,32
 AHCI_PORT_SCAN:
 	add eax,0x80
-	mov ebx,[eax+0x24]
-	cmp ebx,0xeb140101
+	cmp [eax+0x24], dword 0xeb140101
 	loopne AHCI_PORT_SCAN
 	jne AHCI_SATA_DEVICE_NOT_FOUND
-	
-	call __binaryToDecimal_32
+	mov edi,[ebp+4]
+	mov ah,0x0f
+	lea esi,[edi+msg6]
+	call __printString_32
 	hlt
 
 
@@ -237,6 +238,7 @@ msg2: db 13,"storage device not found",0
 msg3: db "IDE device found",13,0
 msg4: db "CD FILE READ ERROR",0
 msg5: db 13,"AHCI Controller found",13,0
+msg6: db "Storage device found",0
 kernel.dir: db "/KERNEL/KERNEL.BIN;1/",0,0,0
 icon.dir: db "/HOME/CD_USER/ICON.STR;1/",0
 boot_parameters.dir: db "/BOOT/BOOT_PARAMETERS.BIN;1/",0

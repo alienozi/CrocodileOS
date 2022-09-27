@@ -13,18 +13,18 @@
 
 __IDE_CD_FILE_READ_32:
 	push ebp
-	mov ebp,esp
+	mov ebp,esp			;pushes critical registers
 	push esi
 	push edi
 	sub esp,4
 	mov eax,16
 	mov ecx,1
-	call __IDE_ATAPI_READ_32
+	call __IDE_ATAPI_READ_32	;loads the primary volume discriptor
 	
 	mov esi,[ebp-4]
 	mov ebx,[ebp-8]
 	
-	add ebx,156
+	add ebx,156			;sets ebx to point root directory entry
 __IDE_CD_FILE_READ_32_directory_search_loop:
 
 	inc esi
@@ -34,42 +34,42 @@ __IDE_CD_FILE_READ_32_directory_search_loop:
 	mov edi,[ebp-8]
 	test cx,2047
 	setnz al
-	shr ecx,11
-	add ecx,eax
-	mov eax,[ebx+2]
-	call __IDE_ATAPI_READ_32
-	mov esi,[ebp-4]
-	mov cx,[esi-3]
-	cmp cx,";1"
-	je __IDE_CD_FILE_READ_32_success
+	shr ecx,11				;makes necessary roundings
+	add ecx,eax				;loads the desired data(directory or file)
+	mov eax,[ebx+2]				;checks whether the loaded data was the file
+	call __IDE_ATAPI_READ_32		;of a directory and if it is a directory
+	mov esi,[ebp-4]				;function returns with 1 written in eax
+	mov cx,[esi-3]				;which indicates success
+	cmp cx,";1"				;otherwise program continues its search in
+	je __IDE_CD_FILE_READ_32_success	;the last loaded directory
 	mov ebx,[ebp-8]
 	xor ecx,ecx
 __IDE_CD_FILE_READ_32_string_lenght_loop:
 	inc esi
-	inc cl
+	inc cl					;measures direcory/file name
 	mov ch,[esi]
 	cmp ch,"/"
 	jne __IDE_CD_FILE_READ_32_string_lenght_loop
 	
-	mov [ebp-9],cl
+	mov [ebp-9],cl				;loads measured lenght in stack
 	xor eax,eax
 __IDE_CD_FILE_READ_32_directory_scan_loop:
 	mov edi,ebx
 	mov al,[ebx]
-	mov ch,[ebx+32]
+	mov ch,[ebx+32]			;load directors/file entry and name lenghts to al and cl
 	add ebx,eax
 	test al,al
-	jz __IDE_CD_FILE_READ_32_fail
-	cmp ch,cl
+	jz __IDE_CD_FILE_READ_32_fail	;if directory/file entry lenght is zero(which is not valid)
+	cmp ch,cl			;to prevent possible infinite loop jumps to fail
 	jne __IDE_CD_FILE_READ_32_directory_scan_loop
-	xor ch,ch
-	mov ebx,edi
+	xor ch,ch			;if lenght of entry and searched target are equal then
+	mov ebx,edi			;strings are compared to ensure that they are exactly same
 	add edi,33
 	mov esi,[ebp-4]
-	repe cmpsb
+	repe cmpsb			;repeted conditional string byte compare
 	je __IDE_CD_FILE_READ_32_directory_search_loop
-	mov cl,[ebp-9]
-	add ebx,eax
+	mov cl,[ebp-9]			;if names are not identical, target name lenght is stored
+	add ebx,eax			;and scan loop continues from next entry
 	jmp __IDE_CD_FILE_READ_32_directory_scan_loop
 	
 	

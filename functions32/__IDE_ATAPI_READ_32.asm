@@ -18,7 +18,7 @@ __IDE_ATAPI_READ_32:
 	ror cx,8
 	ror ax,8
 	ror ecx,16
-	ror eax,16
+	ror eax,16		;coverting little endian to big endian
 	ror cx,8
 	ror ax,8
 	mov [__IDE_ATAPI_READ_32_PACKET+2],eax
@@ -56,7 +56,7 @@ __IDE_ATAPI_READ_32:
 	mov esi,__IDE_ATAPI_READ_32_PACKET
 	sub dl,7
 	mov ecx,6
-	rep outsw
+	rep outsw		;transmit 12 byte packet
 	mov si,ax
 	mov ch,0xff
 	add dl,7
@@ -66,7 +66,7 @@ __IDE_ATAPI_READ_32:
 	mov ecx,eax
 	mov cx,si
 	sub dl,7
-	rep insw
+	rep insw		;recieve input data
 	mov ebp,[ebp]
 	add esp,16
 	ret
