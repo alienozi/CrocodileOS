@@ -19,6 +19,7 @@ int main(int argn,char **argv){
 	char char_ref;
 	char *data_ref, *data_ref2;
 	char *data_ref3=malloc(100);
+	int count=0;
 	fread(data_in,1,size,INPUT);
 	fclose(INPUT);
 	*(data_out)=0;
@@ -126,7 +127,7 @@ int main(int argn,char **argv){
 			break;		
 		}
 	}
-	if(!((strncmp(data_in-strlen("BYTE PTR"),"BYTE PTR",strlen("BYTE PTR"))==0)||(strncmp(data_in-strlen("WORD PTR"),"WORD PTR",strlen("WORD PTR"))==0)||(strncmp(data_in-strlen("DWORD PTR"),"DWORD PTR",strlen("DWORD PTR"))==0)||(strncmp(data_in-strlen("QWORD PTR"),"QWORD PTR",strlen("QWORD PTR"))==0))){
+	if(((long int)(data_ref2)!=4)&&(!((strncmp(data_in-strlen("BYTE PTR"),"BYTE PTR",strlen("BYTE PTR"))==0)||(strncmp(data_in-strlen("WORD PTR"),"WORD PTR",strlen("WORD PTR"))==0)||(strncmp(data_in-strlen("DWORD PTR"),"DWORD PTR",strlen("DWORD PTR"))==0)||(strncmp(data_in-strlen("QWORD PTR"),"QWORD PTR",strlen("QWORD PTR"))==0)))){
 				printf("unexpected \"PTR\"\n");
 			}
 	strcat(data_out,data_in);
@@ -198,10 +199,44 @@ int main(int argn,char **argv){
 	}
 	strcat(data_out,data_in);
 	
+	if((argn==4)&&strcmp(*(argv+3),"-IDT")==0){
+		data_in=data_out;
+		data_out=data_ref;
+		data_ref2=data_in;
+		data_ref=data_in;
+		*(data_out)=0;
+		strcat(data_out,"bits 32\n");
+		data_in+=strlen("bits 32\njmp kernel");
+		while(strstr(data_in,"\nINT")!=0){
+			data_in=strstr(data_in,"\nINT")+1;
+			strncat(data_out,data_in,strchr(data_in,':')-data_in);
+			strcat(data_out,"_Entry: dd ");
+			strncat(data_out,data_in,strchr(data_in,':')-data_in);
+			strcat(data_out,"-INT_SERVICE_START\n");
+			count++;
+		}
+		strcat(data_out,"Entry_terminator: dd 0 \nINT_SERVICE_START: \n");
+		
+		
+		
+		data_in=data_ref;
+		data_in+=strlen("bits 32\njmp kernel");
+		while(strstr(data_in,"\nINT")!=0){
+			strncat(data_out,data_in,strstr(strstr(data_in,"\nINT"),"\tret\n")-data_in);
+			data_in=strstr(strstr(data_in,"\nINT"),"\tret\n")+4;
+			strcat(data_out,"\tiretd");
+		}
+		strcat(data_out,data_in);
+	}else if(argn==4&&strcmp(*(argv+3),"-GDT")){
+		
+	}else{
+		
+	}
 	fwrite(data_out,1,strlen(data_out),OUTPUT);
 	fclose(OUTPUT);
 	free(data_ref);
 	free(data_out);
 	free(data_ref3);
-	return 1;
+	return count;
 }
+

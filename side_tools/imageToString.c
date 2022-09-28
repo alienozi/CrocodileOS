@@ -110,7 +110,7 @@ int main(int argn,char **argv){
 	
 	fclose(OUTPUT);
 	free(data_out);
-	return 1;
+	return 'a';
 	
 	
 	

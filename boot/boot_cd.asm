@@ -206,7 +206,6 @@ AHCI_CARD_FOUND:
 	in eax,dx
 	and al,0xf8
 	mov edx,eax
-	mov ebx,[eax+0x0c]
 	add eax,0x80
 	mov ecx,32
 AHCI_PORT_SCAN:
@@ -214,14 +213,20 @@ AHCI_PORT_SCAN:
 	cmp [eax+0x24], dword 0xeb140101
 	loopne AHCI_PORT_SCAN
 	jne AHCI_SATA_DEVICE_NOT_FOUND
+	mov eax,[eax+0x1c]
+	call __binaryToDecimal_32
 	mov edi,[ebp+4]
 	mov ah,0x0f
 	lea esi,[edi+msg6]
 	call __printString_32
+	mov ecx,0
+	mov eax,0
+	call __AHCI_ATAPI_READ_32
 	hlt
 
 
 	%include "./functions32/__IDE_CD_FILE_READ_32.asm"
+	%include "./functions32/__AHCI_ATAPI_READ_32.asm"
 	%include "./functions32/__printString_32.asm"
 	%include "./functions32/__binaryToDecimal_32.asm"
 CD_FILE_READ_FAIL:
