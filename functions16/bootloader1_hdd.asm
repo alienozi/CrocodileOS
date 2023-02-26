@@ -95,8 +95,8 @@ AHCI_CARD_FOUND:
 	;call __binaryToDecimal_16
 	hlt
 	
-%include "../functions16/__printString_16.asm"
-;%include "../functions16/__binaryToDecimal_16.asm"
+%include "./functions16/__printString_16.asm"
+;%include "./functions16/__binaryToDecimal_16.asm"
 
 msg1: db 10,"COS found"
 enter: db 13,0

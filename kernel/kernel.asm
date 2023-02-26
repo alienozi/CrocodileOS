@@ -35,7 +35,7 @@ _L2:
 	ret
 _LFE0:
 _LC0:
-	 db	"test 123 test",0
+	 db	"abc",0
 kernel:
 _LFB1:
 	       

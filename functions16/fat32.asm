@@ -2,7 +2,7 @@ call boot
 times 3-($-$$) db 0
 NAME:		db "COS     "
 BPB_BytsPerSec:	dw 512
-BPB_SecPerClus:	db 8
+BPB_SecPerClus:	db 4
 BPB_RsvdSecCnt:	dw 16
 BPB_NumFATs:	db 2
 BPB_RootEntCnt: dw 0

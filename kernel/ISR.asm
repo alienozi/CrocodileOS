@@ -13,6 +13,8 @@ _LFB0:
 	call	__x86.get_pc_thunk.ax
  OFFSET_LABEL0:
 	add	eax,  -OFFSET_LABEL0
+	mov [0xb8000+160],word 0xf0db
+
 	nop
 	pop	ebp
 	iretd

@@ -10,9 +10,9 @@ void printS(unsigned char *str,unsigned char color){
 	}
 	return;
 	}
-int kernel(){
+int kernel(int data){
 
-	printS("test 123 test",0xf2);
+	printS("abc",0xf2);
 	
 	/*asm volatile("mov ebx,0xb8000\n");
 	for(i=15;i>0;i--){

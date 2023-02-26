@@ -1,5 +1,5 @@
 bits 16
-%include "../functions/fat32.asm"			;push IP to stack then pop it to bx
+%include "./functions16/fat32.asm"			;push IP to stack then pop it to bx
 	pop bx		
 	cli		;we assume that this boot sector is loaded to a address divisable by 16
 	shr bx,4
@@ -9,13 +9,13 @@ bits 16
 	mov sp,bp
 	
 
-%include "../functions/bootloader1_hdd.asm"
+%include "./functions16/bootloader1_hdd.asm"
 jmp second_stage_boot
 times 510-($-$$) db 0
 dw 0xaa55
 msg2: db "Second Stage Bootloader is loaded",13,0
 second_stage_boot:
 mov si,msg2
-call __printStringx86
+call __printString_16
 hlt
-%include "../functions/bootloader2_hdd.asm"
+%include "./functions16/bootloader2_hdd.asm"
