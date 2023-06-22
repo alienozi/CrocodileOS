@@ -1,0 +1,120 @@
+Shrek_identifier: DB ".SHREK",239,93		(8 bytes)
+
+Shrek_version: DB 1, 0, 0, 1			(4 bytes)
+
+Size_of_SHREK_header:				(2 bytes)
+Number_of_executable_blocks:			(2 bytes)
+Number_of_functions:				(2 bytes)
+Check_sum:					(2 bytes)	//?
+
+Executable_block_entry_offset:			(4 bytes)
+Function_entry_offset:				(4 bytes)
+Reserved:					(4 bytes)
+
+String_table:					(N bytes)
+
+align 8
+
+EB_0:
+
+EB_name:					(4 bytes)	//string table offset
+EB_type:					(4 bytes)	//0:local 0xFF:shared 0xFF00:dynamic
+EB_vaddr:					(4 bytes)
+EB_size:					(4 bytes)	//size in final executable image
+First_function_entry:				(2 bytes)	//index in function entries		//değişen var
+Number_of_functions:				(2 bytes)
+EB_header_size:					(2 bytes)
+Number_of_sections:				(2 bytes)
+Reserved/EB_lock_function:			(2 bytes)	//if EB is ".shared", this field is used to indicate function entry index of the lock function
+Reserved:					(2 bytes)	//this function must revieve a char pointer and return a bool
+								//when returns true COS will grants acces to an external process, otherwise it halts the process,
+								//does not grant access and allerts the user. 0 means there is no lock(purely public).
+
+
+EB_section_entry_0:
+EB_section_type:				(4 bytes)	//string table offset
+EB_section_size:				(4 bytes)	//size in the shrek file
+EB_section_data_offset:				(4 bytes)
+
+EB_section_permisions/EB_key:						//if EB is ".dynamic", the following 4 bytes becomes a key, that is a string table offset
+EB_section_write_permision:			(1 byte)	//0:false, 0xFF:true, ow:reserved
+EB_section_execute_permision:			(1 byte)	//0:false, 0xFF:true, ow:reserved
+EB_section_share_permision:			(1 byte)	//0:false, 0xFF:true, ow:reserved	if true in a ".shared" EB the section becomes available to other processes
+EB_section_share_main_permisions:		(1 byte)	//0:false, 0xFF:true, ow:reserved	if above is true, the write and execute permisions do pass as well
+
+
+
+// EB_section_write_permision, allows the original process to write on that section
+// EB_section_execute_permision, allows the original function to jump on that section
+// EB_section_share_permision, makes the section available to other processes
+// EB_section_share_main_permisions, makes the section available to other processs as same as
+// the original process in terms of write and execute permisions
+//note: EB_key 0 means there is no need for key
+
+
+//note: every section is readable from original process
+//note2: a section can be either writable or executable
+//note3: section share type permisions are valid if only  EB type is ".shared"
+//note4 section permisions of a ".dynamic" EB are ignored. The original EB's shared permisions are used.
+
+
+//note: unlike the name suggests(Executable Block), an EB might not include ".text" section and still be valid but not executable
+
+//EB types: ".local", ".shared", ".dynamic"
+//.local: The EB is not available to other processes in any terms. The EB is fetched from the corresponding shrek file.
+//.shared: The EB is available to other processes as described in section permisions. The EB is fetched from the corresponding shrek file.
+//.dynamic: The EB is already available to the process from another process. The EB is not fetched from the demanding process's shrek file.
+
+
+				.
+				.
+				.
+				.
+EB_N:
+				.
+				.
+				.
+EB_section_entry_0:
+				.
+				.
+				.
+
+EB_0_Functions:
+Function_0:
+
+function_name:					(4 bytes)	//string table offset
+function_EB_number:				(4 bytes)
+function_EB_offset:				(4 bytes)
+				.
+				.
+				.
+Function_N:
+
+function_name:					(4 bytes)	//string table offset
+function_EB_number:				(4 bytes)
+function_EB_offset:				(4 bytes)
+
+				.
+				.
+				.
+
+EB_N_Functions:
+Function_0:
+
+function_name:					(4 bytes)	//string table offset
+function_EB_number:				(4 bytes)
+function_EB_offset:				(4 bytes)
+				.
+				.
+				.
+Function_N:
+
+function_name:					(4 bytes)	//string table offset
+function_EB_number:				(4 bytes)
+function_EB_offset:				(4 bytes)
+
+				.
+				.
+				.
+align 8
+section_data:

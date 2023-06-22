@@ -1,0 +1,15 @@
+align 4
+cursor.0:
+dd	753664
+align 4
+SHREK.LC0:
+db	"test",0
+
+align 4
+SHREK.LC1:
+db	"deneme deneme 1 2 3",0
+
+align 4
+SHREK.LC2:
+db	"deneme d443",0
+

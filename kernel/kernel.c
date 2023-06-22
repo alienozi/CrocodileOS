@@ -1,28 +1,12 @@
-//gcc -c -masm=intel -m32 kernel.c;objcopy -O binary --adjust-vma=0x100000000 -j .text kernel.o  ../iso/kernel/kernel.bin;
-//../side_tools/kernelEdit ../iso/kernel/kernel.bin ../side_tools/kernel_fix.data 7;rm kernel.o;
-//void print(char *str);
-void printS(unsigned char *str,unsigned char color){
-	static unsigned char *p=(unsigned char*)0xb8000;
-	while(*(str)!=0){
-		*(p++)=*(str);
-		*(p++)=color;
-		str++;
-	}
-	return;
-	}
-int kernel(int data){
-
-	printS("abc",0xf2);
-	
-	/*asm volatile("mov ebx,0xb8000\n");
-	for(i=15;i>0;i--){
-		 asm volatile("mov [ebx],word ptr 0xf030\nadd ebx,2\n");
-	}*/
-	 asm volatile("hlt\n");
-	return 1;
-
-
-	
+//a 32-bit kernel for COS
+//author:Totan
+#include<primative.h>
+int test(){
+	pri_print(0x0f,"test");
+	return 0;
 }
-
-
+int main(int argn,char** argv, char** env){
+	pri_print(0x0f,"deneme deneme 1 2 3");
+	pri_print(0x0f,"deneme d443");
+	asm volatile inline("hlt\n");
+}

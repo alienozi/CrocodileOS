@@ -1,0 +1,88 @@
+SHREK.header_start:
+DB ".SHREK",239,93
+SHREK.version: DB 1, 0, 0, 0
+SHREK.size: DW SHREK.header_end-SHREK.header_start
+SHREK.numOfEB: DW 1
+SHREK.numOfFunc: DW 6
+SHREK.checkSum: DW 0
+SHREK.EB_entry_off: DD SHREK.EB_entry_start
+SHREK.Func_entry_off: DD SHREK.func_entry_start
+DD 0	;reserved
+SHREK.header_end:
+SHREK.String_Table:
+SHREK.EB_types:
+SHREK.EB_type_local: DB ".local",0
+SHREK.EB_type_shared: DB ".shared",0
+SHREK.EB_type_dynamic: DB ".dynamic",0
+SHREK.Section_types:
+SHREK_section_type_data: DB ".data",0
+SHREK_section_type_rodata: DB ".rodata",0
+SHREK_section_type_local: DB ".local",0
+SHREK_section_type_text: DB ".text",0
+SHREK.EB_names:
+SHREK.EB_0_name: DB "./kernel/kernel",0
+SHREK.Func_names:
+%include "./kernel/kernel.func"
+Func_end:
+align 8
+SHREK.EB_entry_start:
+SHREK.EB_0:
+SHREK.EB_0_header_begin:
+SHREK.EB_name: DD SHREK.EB_0_name-SHREK.String_Table
+SHREK.EB_type: DD SHREK.EB_type_local-SHREK.String_Table
+SHREK.EB_vaddr: DD 4096
+SHREK.EB_size: DD SHREK.EB_section_data_end-SHREK.EB_section_data_start
+SHREK.EB_First_function_entry_index: DW 0
+SHREK.EB_num_of_func: DW 6
+SHREK.EB_header_size:DW SHREK.EB_0_header_end-SHREK.EB_0_header_begin
+SHREK.EB_numner_of_sections:DW 2
+DD 0	;reserved
+SHREK.EB_0_header_end:
+SHREK.text_section_entry:
+SHREK.text_section_type: DD SHREK_section_type_text - SHREK.String_Table
+SHREK.text_section_size: DD SHREK.Text_end-SHREK.Text_begin
+SHREK.text_section_data_offset: DD SHREK.Text_begin
+SHREK.text_section_permisions: DB 0x00, 0xff, 0x00, 0x00
+SHREK.rodata_section_entry:
+SHREK.rodata_section_type: DD SHREK_section_type_rodata - SHREK.String_Table
+SHREK.rodata_section_size: DD SHREK.Rodata_end-SHREK.Rodata_begin
+SHREK.rodata_section_data_offset: DD SHREK.Rodata_begin
+SHREK.rodata_section_permisions: DB 0x00, 0x00, 0x00, 0x00
+SHREK.func_entry_start:
+SHREK.func0:
+SHREK.func0_name: dd SHREK.func0_name_off - SHREK.String_Table
+SHREK.func0_EB_num:dd 0
+SHREK.func0_EB_off: dd pri_print
+SHREK.func1:
+SHREK.func1_name: dd SHREK.func1_name_off - SHREK.String_Table
+SHREK.func1_EB_num:dd 0
+SHREK.func1_EB_off: dd test
+SHREK.func2:
+SHREK.func2_name: dd SHREK.func2_name_off - SHREK.String_Table
+SHREK.func2_EB_num:dd 0
+SHREK.func2_EB_off: dd main
+SHREK.func3:
+SHREK.func3_name: dd SHREK.func3_name_off - SHREK.String_Table
+SHREK.func3_EB_num:dd 0
+SHREK.func3_EB_off: dd __x86.get_pc_thunk.ax
+SHREK.func4:
+SHREK.func4_name: dd SHREK.func4_name_off - SHREK.String_Table
+SHREK.func4_EB_num:dd 0
+SHREK.func4_EB_off: dd __x86.get_pc_thunk.cx
+SHREK.func5:
+SHREK.func5_name: dd SHREK.func5_name_off - SHREK.String_Table
+SHREK.func5_EB_num:dd 0
+SHREK.func5_EB_off: dd __x86.get_pc_thunk.bx
+SHREK.section_data_dump:align 4096
+SHREK.EB_section_data_start:
+SHREK.Text_begin:
+%include "./kernel/kernel.text"
+SHREK.Text_end:
+align 4096
+times 4096 db 0
+SHREK.Rodata_begin:
+%include "./kernel/kernel.rodata"
+SHREK.Rodata_end:
+align 4096
+times 4096 db 0
+SHREK.EB_section_data_end:

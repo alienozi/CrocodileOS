@@ -1,0 +1,6 @@
+SHREK.func0_name_off: db "pri_print",0
+SHREK.func1_name_off: db "test",0
+SHREK.func2_name_off: db "main",0
+SHREK.func3_name_off: db "__x86.get_pc_thunk.ax",0
+SHREK.func4_name_off: db "__x86.get_pc_thunk.cx",0
+SHREK.func5_name_off: db "__x86.get_pc_thunk.bx",0
