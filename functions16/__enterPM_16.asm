@@ -37,10 +37,9 @@ far_jump_0x08:
 	db 0	
 __enterPM16_32bit_mode:	
 bits 32
-	xor ax,ax
+	mov ax,16
 	mov fs,ax
-	mov gs,ax
-	mov ax,16		;segment descriptors are set as specified
+	mov gs,ax		;segment descriptors are set as specified
 	mov ss,ax
 	mov ds,ax
 	mov es,ax

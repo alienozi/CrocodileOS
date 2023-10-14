@@ -8,5 +8,5 @@ int test(){
 int main(int argn,char** argv, char** env){
 	pri_print(0x0f,"deneme deneme 1 2 3");
 	pri_print(0x0f,"deneme d443");
-	asm volatile inline("hlt\n");
+	asm volatile inline("hlt\n"); 
 }
