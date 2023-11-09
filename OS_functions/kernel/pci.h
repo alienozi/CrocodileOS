@@ -1,5 +1,9 @@
-#ifndef LE_PCI
-#define LE_PCI
+//a primative 32-bit pci library for COS
+//author:Totan
+
+#ifndef PCI_H
+#define PCI_H
+
 #include<stdint.h>
 #include<stdbool.h>
 

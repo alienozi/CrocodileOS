@@ -1,5 +1,7 @@
-#ifndef LE_SATA
-#define LE_SATA
+//a 32-bit sata data structure library for COS
+//author:Totan
+#ifndef SATA_H
+#define SATA_H
 
 #include<stdint.h>
 #define ATAPI_SIGNATURE 0xEB140101

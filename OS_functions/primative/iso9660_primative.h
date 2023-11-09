@@ -1,7 +1,12 @@
-#ifndef PRIMATIVE_ISO9660_H
-#define PRIMATIVE_ISO9660_H
-#include<cosdef.h>
-#include<iso9660.h>
+//a primative iso9660 file system library for COS bootloader
+//author:Totan
+#ifndef ISO9660_PRIMATIVE_H
+#define ISO9660_PRIMATIVE_H
+
+#include<general/cosdef.h>
+#include<kernel/iso9660.h>
+
+#include<primative/ahci_primative.h>
 //dest must have a size of multiple of 2k
 //note: this is a very primative function so it does not support all likely possible
 //	extreme cases, such as a directory larger than one sector

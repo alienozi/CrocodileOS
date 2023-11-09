@@ -1,12 +1,6 @@
+	%define BIOS_MMAP_ADDR	0x10000
 bits 16
 	%include "./boot/MAIN_ADDR_FILE.asm"
-	mov dx, 0x3D4
-	mov al, 0xA	;disables the cursor
-	out dx, al
-	inc dx
-	mov al, 0x20
-	out dx, al
-
 	call ip_get
 	ip_get:			
 	pop bx		;push IP to stack then pop it to ax
@@ -16,6 +10,26 @@ bits 16
 	mov ds,bx
 	mov bp,0x7000	;set stack and base pointers
 	mov sp,bp
+
+	mov dx, 0x3D4
+	mov al, 0xA	;disables the cursor
+	out dx, al
+	inc dx
+	mov al, 0x20
+	out dx, al
+
+	mov di, BIOS_MMAP_ADDR >> 4 
+	mov es, di
+	mov di, BIOS_MMAP_ADDR & 0xFFFF
+
+	push cx
+
+	call __biosMMapGet
+
+	pop cx
+
+	push eax
+
 	mov edi,ds
 	shl edi,4
 	mov bx,GDT_Descriptor
@@ -28,10 +42,16 @@ bits 32
 	mov ax,cx
 	and ax,0xFFF0
 	add eax, COS_SIGNATURE
+
+	pop ebx
+
+	push ebx
+	push BIOS_MMAP_ADDR
 	push eax
 	call MAIN_ADDR_OFF+pre_boot_end
 bits 16
 	%include "./functions16/__enterPM_16.asm"
+	%include "./functions16/__biosMMapGet.asm"
 GDT:
 	dd 0,0
 	dw 0xffff

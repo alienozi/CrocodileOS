@@ -6,7 +6,7 @@
 #include<iostream>
 #include<string.h>
 
-#include"/home/totan/Desktop/CrocodileOS/OS_functions/general/shrek.h"
+#include<shrek.h>
 static char filler[] = {0,0,0,0,0,0,0,0};
 int main(int argn, char** argv){
     int rodata_size, data_size, text_size, func_size, bss_size, output_size;

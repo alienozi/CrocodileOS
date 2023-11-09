@@ -1,7 +1,7 @@
-//a primative 32-bit library for COS
+//a primative 32-bit library for COS bootloader
 //author:Totan
-#ifndef COS_PRIMATIVE
-#define COS_PRIMATIVE 0
+#ifndef PRIMATIVE_H
+#define PRIMATIVE_H
 #include<stdint.h>
 #include<stdbool.h>
 

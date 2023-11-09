@@ -1,1 +1,1 @@
-%define MAIN_ADDR_OFF (0x00008d22 - 0x7C00)
+%define MAIN_ADDR_OFF (0x00009244 - 0x7C00)

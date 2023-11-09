@@ -1,9 +1,12 @@
-#ifndef PRIMATIVE_AHCI
-#define PRIMATIVE_AHCI
+//a primative ahci library for COS bootloader
+//author:Totan
+#ifndef AHCI_PRIMATIVE_H
+#define AHCI_PRIMATIVE_H
+
 #include<stdbool.h>
-#include<le_sata.h>
-#include<le_ahci.h>
-#include<primative.h>
+#include<kernel/sata.h>
+#include<kernel/ahci.h>
+#include<primative/primative.h>
 void pri_identify_atapi_dev(Ahci_dev_ctrl* sata_dev, uint16_t* ui16_dev_info){
 	Fis_reg_h2d fis;
 	Prdt_entry prdt;

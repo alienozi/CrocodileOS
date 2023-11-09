@@ -1,5 +1,9 @@
+//a 32-bit iso9660 data structure library for COS
+//author:Totan
+
 #ifndef ISO9660_H
 #define ISO9660_H
+
 #include<stdint.h>
 
 typedef struct{

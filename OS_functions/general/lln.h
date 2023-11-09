@@ -2,7 +2,7 @@
 #define LLN.H
 
 #include<stdint.h>
-#include<cosdef.h>
+#include<general/cosdef.h>
 typedef struct{
 	uint32_t u32_size;	//in double words
 	uint32_t* u32p_num;

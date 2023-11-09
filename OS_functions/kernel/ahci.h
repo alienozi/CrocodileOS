@@ -1,12 +1,16 @@
-#ifndef LE_AHCI
-#define LE_AHCI
+//a primative ahci library for COS
+//author:Totan
+
+#ifndef AHCI_H
+#define AHCI_H
+
 #include<stdint.h>
 #include<stdbool.h>
-#include<stdatomic.h>
 
-#include<le_pci.h>
-#include<le_sata.h>
-#include<cosdef.h>
+#include<kernel/pci.h>
+#include<kernel/sata.h>
+#include<general/cosdef.h>
+
 #define FIS_TYPE_REG_H2D 0x27
 #define FIS_TYPE_REG_D2H 0x34
 #define FIS_TYPE_DMA_D2H 0x39
@@ -181,7 +185,7 @@ bool ahci_scan_port(Ahci_ctrl* ahci_base, Ahci_dev_ctrl* dev, uint8_t ui8_start_
 	}
 	return false;
 }
-#define BUSY_WAIT_COUNT		10000000
+
 bool ahci_start_cmd(Ahci_dev_ctrl* dev){
 	dev->ahci_base->port[dev->port_id].is = -1;
 
